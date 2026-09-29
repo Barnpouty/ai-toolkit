@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Thank you — AI Toolkit 2026{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+{% block body_class %}page-simple{% endblock %}
+{% block content %}
+<section class="simple">
+  <div class="wrap simple__inner">
+    <h1 class="h2">Thank you for your purchase.</h1>
+    <p class="prose-lg">Your order was placed through EscalePay. Follow the access instructions from the checkout to download the AI Starter Kit 2026 and the bonus guide.</p>
+    <p>Keep your payment confirmation. {% if contact_email %}If you can’t find your access details, write to <a href="mailto:{{ contact_email }}">{{ contact_email }}</a> with your confirmation and we’ll help.{% endif %}</p>
+    <p class="simple__hint">A good first step once you have the guides: start with the free stack in the bonus guide, then try the quick-start plan that matches you.</p>
+    <a class="link-quiet" href="{{ url_for('index') }}">Back to the home page</a>
+  </div>
+</section>
+{% endblock %}

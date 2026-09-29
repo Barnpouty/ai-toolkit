@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="preload" as="image" href="{{ asset('images/cover-starter-kit.webp') }}" type="image/webp">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ product.name }} {{ product.edition }} — {{ product.starter_title }} + bonus guide",
+  "description": "Two PDF guides: {{ product.starter_full_title }}, and {{ product.bonus_title }}.",
+  "image": "{{ site_url }}{{ url_for('static', filename='images/cover-starter-kit.webp') }}",
+  "brand": { "@type": "Brand", "name": "{{ product.name }}" }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+
+{# ---------------------------------------------------------------- HERO #}
+<section class="hero" aria-labelledby="hero-title">
+  <div class="wrap hero__grid">
+    <div class="hero__copy">
+      <p class="hero__label">Two PDF guides, 2026 edition</p>
+      <h1 class="hero__title" id="hero-title">Know which AI tool fits the job in front of you.</h1>
+      <p class="hero__lede">
+        More than 50 AI tools for writing, research, design, careers, productivity, video and code — organised by task,
+        with plain advice on where to start, when the free version is enough, and when paying actually makes sense.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary btn--lg" href="{{ checkout_url }}" rel="noopener" data-magnetic>Get the AI toolkit</a>
+        <a class="link-quiet" href="#inside">Explore the toolkit</a>
+      </div>
+      <dl class="spec">
+        <div class="spec__item"><dt>Guides</dt><dd>2 PDFs</dd></div>
+        <div class="spec__item"><dt>Pages</dt><dd>{{ product.starter_pages + product.bonus_pages }}</dd></div>
+        <div class="spec__item"><dt>Tool categories</dt><dd>8</dd></div>
+        <div class="spec__item"><dt>Quick-start plans</dt><dd>4</dd></div>
+      </dl>
+    </div>
+
+    <figure class="hero__visual" data-tilt>
+      <div class="books">
+        <div class="book book--back">
+          <img src="{{ asset('images/cover-bonus-guide.webp') }}" width="880" height="1100" decoding="async"
+               alt="Cover of the bonus guide, AI Toolkit for Students and Young Professionals, 2026 edition">
+        </div>
+        <div class="book book--front">
+          <img src="{{ asset('images/cover-starter-kit.webp') }}" width="880" height="1100" fetchpriority="high" decoding="async"
+               alt="Cover of the AI Starter Kit: 50+ AI Tools Every Student and Young Professional Should Know in 2026">
+        </div>
+      </div>
+      <figcaption class="hero__caption">
+        <span>Starter Kit, {{ product.starter_pages }} pages</span>
+        <span>Bonus guide, {{ product.bonus_pages }} pages</span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+{# ------------------------------------------------------------- TOOLKIT #}
+<section class="section section--toolkit" id="toolkit" aria-labelledby="toolkit-title">
+  <div class="wrap split">
+    <div class="split__head">
+      <p class="kicker">The Starter Kit</p>
+      <h2 class="h2" id="toolkit-title">New AI tools appear every month. You need a few of them, used well.</h2>
+    </div>
+    <div class="split__body">
+      <p class="prose-lg">
+        Students use AI for homework, young professionals use it at work, and it’s easy to feel lost — or to pay for the wrong thing.
+        The AI Starter Kit 2026 is a map: the tools worth knowing in each area, what each one is for, and which to try first.
+      </p>
+      <dl class="contents-list">
+        <div class="contents-list__row" data-reveal>
+          <dt>Eight tool categories</dt>
+          <dd>Six tools in each, with a one-line description of what it does and a pick-this-first tip.</dd>
+        </div>
+        <div class="contents-list__row" data-reveal>
+          <dt>Four quick-start plans</dt>
+          <dd>Five tools each for students, job seekers, entrepreneurs and researchers.</dd>
+        </div>
+        <div class="contents-list__row" data-reveal>
+          <dt>Two step-by-step workflows</dt>
+          <dd>One for researching a topic, one for running a job search.</dd>
+        </div>
+        <div class="contents-list__row" data-reveal>
+          <dt>A 7-day AI challenge</dt>
+          <dd>A simple way to test five tools in real work and keep only the useful ones.</dd>
+        </div>
+        <div class="contents-list__row" data-reveal>
+          <dt>The full map on one page</dt>
+          <dd>Every category with its recommended starting tool, for quick reference.</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+{# -------------------------------------------------------------- INSIDE #}
+<section class="section section--inside" id="inside" aria-labelledby="inside-title">
+  <div class="wrap">
+    <header class="section-head">
+      <h2 class="h2" id="inside-title">Organised by the work you’re doing.</h2>
+      <p class="section-head__lede">Pick a category to see the six tools the Starter Kit covers for it.</p>
+    </header>
+
+    <div class="explorer" data-tabs>
+      <div class="explorer__nav" role="tablist" aria-label="Tool categories">
+        {% for cat in categories %}
+        <button class="explorer__tab" role="tab" type="button" id="tab-{{ cat.slug }}" aria-controls="panel-{{ cat.slug }}"
+                aria-selected="{{ 'true' if loop.first else 'false' }}" tabindex="{{ '0' if loop.first else '-1' }}">
+          <span class="explorer__name">{{ cat.name }}</span>
+          <span class="explorer__count">{{ cat.tools|length }} tools</span>
+        </button>
+        {% endfor %}
+      </div>
+
+      <div class="explorer__panels">
+        {% for cat in categories %}
+        <div class="explorer__panel" role="tabpanel" id="panel-{{ cat.slug }}" aria-labelledby="tab-{{ cat.slug }}" tabindex="0" {% if not loop.first %}data-hidden{% endif %}>
+          <h3 class="explorer__title">{{ cat.name }}</h3>
+          <p class="explorer__lede">{{ cat.lede }}</p>
+          <dl class="tools">
+            {% for name, desc, plan in cat.tools %}
+            <div class="tools__item">
+              <dt>{{ name }}{% if plan %} <span class="tag">{{ plan }}</span>{% endif %}</dt>
+              <dd>{{ desc }}</dd>
+            </div>
+            {% endfor %}
+          </dl>
+          <p class="explorer__tip"><span class="explorer__tip-label">From the guide</span> {{ cat.tip }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ----------------------------------------------------------- WORKFLOWS #}
+<section class="section section--workflows" aria-labelledby="workflows-title">
+  <div class="wrap">
+    <header class="section-head">
+      <h2 class="h2" id="workflows-title">Not just a list. A way to put the tools to work.</h2>
+      <p class="section-head__lede">The Starter Kit strings tools together into short routines you can follow the same day.</p>
+    </header>
+    <div class="workflows">
+      {% for wf in workflows %}
+      <article class="workflow" data-reveal>
+        <h3 class="workflow__title">{{ wf.title }}</h3>
+        <p class="workflow__source">{{ wf.source }}</p>
+        {% if wf.outcome %}
+        <ul class="workflow__checks">
+          {% for s in wf.steps %}<li>{{ s }}</li>{% endfor %}
+        </ul>
+        <p class="workflow__outcome">{{ wf.outcome }}</p>
+        {% else %}
+        <ol class="workflow__steps">
+          {% for s in wf.steps %}<li>{{ s }}</li>{% endfor %}
+        </ol>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ----------------------------------------------------------------- WHO #}
+<section class="section section--who" id="who" aria-labelledby="who-title">
+  <div class="wrap">
+    <header class="section-head">
+      <h2 class="h2" id="who-title">Start from where you are.</h2>
+      <p class="section-head__lede">
+        Written for high-school and university students, recent graduates and young professionals — and anyone who wants to
+        work smarter without spending more than necessary. The Starter Kit’s four quick-start plans each name five tools to begin with.
+      </p>
+    </header>
+    <ul class="roles">
+      {% for qs in quick_starts %}
+      <li class="role" data-reveal>
+        <h3 class="role__name">{{ qs.role }}</h3>
+        <p class="role__summary">{{ qs.summary }}</p>
+        <p class="role__tools"><span class="visually-hidden">Starting tools: </span>{{ qs.tools | join(', ') }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{# --------------------------------------------------------------- BONUS #}
+<section class="section section--bonus" id="bonus" aria-labelledby="bonus-title">
+  <div class="wrap">
+    <div class="bonus-intro">
+      <div class="bonus-intro__cover">
+        <img src="{{ asset('images/cover-bonus-guide.webp') }}" width="880" height="1100" loading="lazy" decoding="async"
+             alt="Cover of the bonus guide: AI Toolkit for Students and Young Professionals. Free and paid AI tools explained simply.">
+      </div>
+      <div class="bonus-intro__copy">
+        <p class="kicker kicker--brass">Included with your purchase</p>
+        <h2 class="h2" id="bonus-title">And a second guide, on what’s worth paying for.</h2>
+        <p class="prose-lg">
+          <em class="title-ref">{{ product.bonus_title }}</em> is a {{ product.bonus_pages }}-page companion that explains
+          free and paid AI tools simply: when to use them, how they help and what they cost.
+        </p>
+        <blockquote class="rule">
+          <p>{{ bonus_rule }}</p>
+          <footer>The guide’s rule for every subscription</footer>
+        </blockquote>
+      </div>
+    </div>
+
+    <div class="bonus-block">
+      <h3 class="h3">What the bonus guide covers</h3>
+      <dl class="chapters">
+        {% for title, detail in bonus_chapters %}
+        <div class="chapters__row"><dt>{{ title }}</dt><dd>{{ detail }}</dd></div>
+        {% endfor %}
+      </dl>
+    </div>
+
+    <div class="bonus-block compare">
+      <div class="compare__col">
+        <h3 class="h3">When free is enough</h3>
+        <ul class="ticks">{% for i in when_free %}<li>{{ i }}</li>{% endfor %}</ul>
+      </div>
+      <div class="compare__col">
+        <h3 class="h3">When paying makes sense</h3>
+        <ul class="ticks ticks--brass">{% for i in when_paid %}<li>{{ i }}</li>{% endfor %}</ul>
+      </div>
+    </div>
+
+    <div class="bonus-block">
+      <h3 class="h3">A quick decision guide</h3>
+      <p class="muted">What to start with, and what to upgrade to only if you need it. A sample of the guide’s table:</p>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Decision guide sample">
+        <table class="decision">
+          <thead><tr><th scope="col">Your situation</th><th scope="col">Start with</th><th scope="col">Consider upgrading to</th></tr></thead>
+          <tbody>
+            {% for sit, start, up in decision_guide %}
+            <tr><th scope="row">{{ sit }}</th><td>{{ start }}</td><td>{{ up }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p class="muted small">The full table in the guide covers {{ decision_guide_total }} situations, including essays, coding projects, lecture recordings and interview practice.</p>
+    </div>
+
+    <div class="bonus-block">
+      <h3 class="h3">Build a personal stack of three to six tools</h3>
+      <div class="stacks">
+        {% for st in stacks %}
+        <article class="stack" data-reveal>
+          <h4 class="stack__name">{{ st.name }}</h4>
+          <p class="stack__cost">{{ st.cost }}</p>
+          <ul>{% for i in st["items"] %}<li>{{ i }}</li>{% endfor %}</ul>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="bonus-cta">
+      <p>Both guides come together in one purchase.</p>
+      <a class="btn btn--primary" href="{{ checkout_url }}" rel="noopener" data-magnetic>Get both guides</a>
+    </div>
+  </div>
+</section>
+
+{# --------------------------------------------------------------- VALUE #}
+<section class="section section--value" aria-labelledby="value-title">
+  <div class="wrap split">
+    <div class="split__head">
+      <h2 class="h2" id="value-title">Why it’s worth having.</h2>
+    </div>
+    <div class="split__body">
+      <div class="reasons">
+        <div class="reason" data-reveal>
+          <h3 class="h3">Organised by task, not by hype</h3>
+          <p>You look up the job — a literature review, slides for tomorrow, a CV — and find the tools for it, not a ranking of the newest apps.</p>
+        </div>
+        <div class="reason" data-reveal>
+          <h3 class="h3">Honest about money</h3>
+          <p>The bonus guide assumes you start with free tiers, points out student discounts, and tells you when you can skip the paid version.</p>
+        </div>
+        <div class="reason" data-reveal>
+          <h3 class="h3">Plain language throughout</h3>
+          <p>Each tool is described by what it does and when it helps. No technical background needed to follow either guide.</p>
+        </div>
+        <div class="reason" data-reveal>
+          <h3 class="h3">Responsible by design</h3>
+          <p>The guides are clear about the limits of AI, with working rules you can apply straight away:</p>
+          <ul class="rules">
+            {% for title, text in rules %}<li><strong>{{ title }}.</strong> {{ text }}</li>{% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      <aside class="note" aria-label="Worth knowing before you buy">
+        <h3 class="note__title">Worth knowing before you buy</h3>
+        <p>This is a reference guide, not a video course. AI tools, prices and student offers change often, so the guides focus on what each tool is for and ask you to confirm current plans on the official websites before paying.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+{# ------------------------------------------------------------- PREVIEW #}
+<section class="section section--preview" aria-labelledby="preview-title">
+  <div class="wrap">
+    <header class="section-head section-head--row">
+      <h2 class="h2" id="preview-title">Look inside.</h2>
+      <p class="section-head__lede">Six of the fifty pages, as they appear in the guides.</p>
+    </header>
+  </div>
+  <div class="pages" tabindex="0" role="region" aria-label="Sample pages, scroll horizontally">
+    {% for file, guide, caption in previews %}
+    <figure class="page">
+      <img src="{{ asset('images/' ~ file) }}" width="720" height="900" loading="lazy" decoding="async" alt="Sample page from the {{ guide }}: {{ caption }}">
+      <figcaption><span class="page__guide">{{ guide }}</span>{{ caption }}</figcaption>
+    </figure>
+    {% endfor %}
+  </div>
+</section>
+
+{# ----------------------------------------------------------------- FAQ #}
+<section class="section section--faq" id="faq" aria-labelledby="faq-title">
+  <div class="wrap split">
+    <div class="split__head">
+      <h2 class="h2" id="faq-title">Questions before you buy.</h2>
+      {% if contact_email %}<p class="muted">Something else? Write to <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>.</p>{% endif %}
+    </div>
+    <div class="split__body faq">
+      {% for q, a in faq %}
+      <details class="faq__item">
+        <summary>{{ q }}</summary>
+        <div class="faq__answer"><p>{{ a }}</p></div>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ----------------------------------------------------------- FINAL CTA #}
+<section class="final" aria-labelledby="final-title">
+  <div class="wrap final__inner">
+    <blockquote class="final__quote">
+      <p>{{ closing_quote }}</p>
+      <footer>From the closing page of the bonus guide</footer>
+    </blockquote>
+    <div class="final__offer">
+      <h2 class="h2" id="final-title">Build a smaller, better AI toolkit.</h2>
+      <p>
+        You get the AI Starter Kit 2026 ({{ product.starter_pages }} pages) and the bonus guide
+        {{ product.bonus_title }} ({{ product.bonus_pages }} pages), both as PDFs.
+      </p>
+      <a class="btn btn--primary btn--lg" href="{{ checkout_url }}" rel="noopener" data-magnetic>Get the complete toolkit</a>
+      <p class="final__fine">Payment is completed on EscalePay’s checkout page. The price is shown there before you pay.</p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

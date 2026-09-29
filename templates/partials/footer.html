@@ -1,0 +1,40 @@
+{% set base = '' if request.endpoint == 'index' else url_for('index') %}
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <div class="site-footer__brand">
+      <a class="wordmark" href="{{ url_for('index') }}"><span class="wordmark__name">AI Toolkit</span><span class="wordmark__ed" aria-hidden="true">{{ product.edition }}</span></a>
+      <p>Two practical PDF guides to the AI tools that help with study, work and careers — and how to choose between them.</p>
+    </div>
+
+    <nav class="site-footer__col" aria-label="Page sections">
+      <h2 class="site-footer__heading">The guides</h2>
+      <ul>
+        <li><a href="{{ base }}#toolkit">The toolkit</a></li>
+        <li><a href="{{ base }}#inside">What’s inside</a></li>
+        <li><a href="{{ base }}#bonus">Bonus guide</a></li>
+        <li><a href="{{ base }}#who">Who it’s for</a></li>
+        <li><a href="{{ base }}#faq">FAQ</a></li>
+      </ul>
+    </nav>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Buy</h2>
+      <ul>
+        <li><a href="{{ checkout_url }}" rel="noopener">Get the toolkit</a></li>
+        {% if contact_email %}<li><a href="mailto:{{ contact_email }}">{{ contact_email }}</a></li>{% endif %}
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Legal</h2>
+      <ul>
+        <li><a href="{{ url_for('privacy') }}">Privacy policy</a></li>
+        <li><a href="{{ url_for('terms') }}">Terms of sale</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap site-footer__base">
+    <p>© {{ year }} {{ product.name }}. All rights reserved.</p>
+    <p>Tool names belong to their owners. These guides are independent and not affiliated with the tools they describe.</p>
+  </div>
+</footer>
